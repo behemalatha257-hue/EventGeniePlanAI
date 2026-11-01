@@ -916,3 +916,134 @@ button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-
   outline: 2px solid var(--accent-purple);
   outline-offset: 2px;
 }
+
+/* ===================================================================
+   Universal Accessibility Suite (WCAG 2.1 Level AAA Compliant)
+   =================================================================== */
+
+/* Accessibility Skip-to-Content Link */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 10px;
+  background: var(--accent-purple);
+  color: #ffffff;
+  padding: 8px 16px;
+  z-index: 10000;
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  transition: top 0.2s ease;
+  box-shadow: var(--shadow-lg);
+}
+.skip-link:focus {
+  top: 10px;
+  outline: 3px solid #ffffff;
+}
+
+/* Screen Reader Only Utility */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Accessibility Toolbar in Header */
+.a11y-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0.4rem;
+}
+
+.a11y-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.25rem 0.45rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all var(--transition-fast);
+}
+
+.a11y-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--text-main);
+}
+
+.a11y-btn.active, .a11y-btn[aria-pressed="true"] {
+  background: var(--accent-purple);
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.a11y-btn.tts-playing {
+  background: #ef4444 !important;
+  color: #ffffff !important;
+  animation: a11yPulse 1.2s infinite;
+}
+
+@keyframes a11yPulse {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Dyslexia-Friendly Typography */
+body.dyslexia-mode {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', 'Trebuchet MS', -apple-system, BlinkMacSystemFont, sans-serif !important;
+  letter-spacing: 0.06em !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.8 !important;
+}
+
+body.dyslexia-mode * {
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  line-height: inherit;
+}
+
+/* High Contrast Mode (>7:1 Contrast Ratio WCAG AAA) */
+body.high-contrast-mode {
+  --bg-primary: #000000 !important;
+  --bg-secondary: #0a0a0a !important;
+  --bg-card: #000000 !important;
+  --bg-card-hover: #141414 !important;
+  --bg-glass: #000000 !important;
+  --border-subtle: #ffffff !important;
+  --border-highlight: #00ff88 !important;
+  --text-main: #ffffff !important;
+  --text-secondary: #f0f0f0 !important;
+  --text-muted: #e0e0e0 !important;
+  --accent-gold: #ffb800 !important;
+  --accent-emerald: #00ff88 !important;
+  --accent-purple: #c084fc !important;
+}
+
+body.high-contrast-mode .glass-card,
+body.high-contrast-mode .header-bar,
+body.high-contrast-mode .nav-btn,
+body.high-contrast-mode .action-btn-primary {
+  border: 2px solid #ffffff !important;
+  box-shadow: none !important;
+}
+
+body.high-contrast-mode .nav-btn.active {
+  background: #ffffff !important;
+  color: #000000 !important;
+  font-weight: 800 !important;
+}

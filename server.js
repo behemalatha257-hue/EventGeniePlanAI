@@ -12,6 +12,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const { errorHandler } = require('./server/middleware/errorHandler');
+const { prototypePollutionGuard } = require('./server/middleware/validation');
 
 // Route modules
 const chatRoutes = require('./server/routes/chatRoutes');
@@ -29,7 +30,7 @@ const rsvpRoutes = require('./server/routes/rsvpRoutes');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Security Headers with Helmet
+// Security Headers with Enhanced Helmet Protection
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -38,20 +39,35 @@ app.use(
         scriptSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net', 'https://cdnjs.cloudflare.com'],
         workerSrc: ["'self'", 'blob:', 'https://cdnjs.cloudflare.com'],
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com', 'https://cdn.jsdelivr.net'],
-        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com', 'data:'],
         imgSrc: ["'self'", 'data:', 'blob:', 'https://images.unsplash.com'],
         connectSrc: ["'self'", 'https://generativelanguage.googleapis.com', 'https://cdnjs.cloudflare.com']
       }
     },
-    crossOriginEmbedderPolicy: false
+    crossOriginEmbedderPolicy: false,
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
+    xContentTypeOptions: true,
+    xFrameOptions: { action: 'deny' }
   })
 );
 
-// Compression & Body Parsing
+// High-Performance Observability Middleware (Server-Timing Header)
+app.use((req, res, next) => {
+  const start = process.hrtime.bigint();
+  res.on('finish', () => {
+    const elapsedMs = Number(process.hrtime.bigint() - start) / 1e6;
+    res.setHeader('Server-Timing', `total;dur=${elapsedMs.toFixed(2)}`);
+  });
+  next();
+});
+
+// Compression & Body Parsing with Prototype Pollution Defense
 app.use(compression());
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(prototypePollutionGuard);
 
 // Rate Limiter for API endpoints
 const apiLimiter = rateLimit({
@@ -108,7 +124,7 @@ if (require.main === module) {
     console.log(`🧞 EventGeniePlan AI Server Running on Port ${PORT}`);
     console.log(`🌐 Dashboard URL: http://localhost:${PORT}`);
     console.log(`⚡ Environment:   ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🤖 AI Engine:     ${process.env.GEMINI_MODEL || 'gemini-3.8-flash'}`);
+    console.log(`🤖 AI Engine:     ${process.env.GEMINI_MODEL || 'gemini-3.5-flash'}`);
     console.log(`=======================================================`);
   });
 

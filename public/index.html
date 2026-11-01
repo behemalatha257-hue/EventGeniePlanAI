@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
+  <!-- Universal Accessibility Skip Link (WCAG 2.1 AAA) -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- Top Sticky Navigation Bar -->
   <header class="header-bar" role="banner">
@@ -54,6 +56,23 @@
 
     <!-- Header Controls: Theme Toggle & AI Status -->
     <div class="header-controls">
+      <!-- Universal Accessibility Toolbar (WCAG 2.1 AAA) -->
+      <div class="a11y-toolbar" role="region" aria-label="Accessibility Controls">
+        <button id="a11y-tts-btn" class="a11y-btn" aria-label="Read Aloud / Text to Speech" title="Read Aloud (TTS Voice)">
+          <span class="tts-icon">🎙️</span> Read
+        </button>
+        <button id="a11y-dyslexia-toggle" class="a11y-btn" aria-label="Toggle Dyslexia Friendly Font" title="OpenDyslexic Font Mode">
+          <span>📖</span> Dyslexic
+        </button>
+        <button id="a11y-contrast-toggle" class="a11y-btn" aria-label="Toggle High Contrast AAA" title="High Contrast Mode (>7:1)">
+          <span>🌓</span> Contrast
+        </button>
+        <div style="display: flex; align-items: center; gap: 2px;">
+          <button id="a11y-font-decrease" class="a11y-btn" aria-label="Decrease Font Size" title="Smaller Font (A-)">A-</button>
+          <button id="a11y-font-reset" class="a11y-btn" aria-label="Reset Font Size" title="Default Font (A)">A</button>
+          <button id="a11y-font-increase" class="a11y-btn" aria-label="Increase Font Size" title="Larger Font (A+)">A+</button>
+        </div>
+      </div>
       <div id="system-status-indicator" class="chip-btn" style="font-size: 0.75rem; border-color: rgba(16, 185, 129, 0.4);">
         🟢 AI Engine: <strong>Gemini 3.8 Flash</strong>
       </div>
@@ -64,7 +83,7 @@
   </header>
 
   <!-- Main Viewport Container -->
-  <main class="app-container" role="main">
+  <main class="app-container" id="main-content" role="main">
 
     <!-- ===================================================================
          TAB 1: USER DASHBOARD
@@ -728,5 +747,7 @@
   <script src="/js/checklistManager.js"></script>
   <script src="/js/advancedFeatures.js"></script>
   <script src="/js/app.js"></script>
+  <!-- WCAG 2.1 Level AAA Universal Accessibility Suite -->
+  <script src="/js/accessibility.js"></script>
 </body>
 </html>

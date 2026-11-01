@@ -8,7 +8,11 @@
     "start": "node server.js",
     "dev": "node server.js",
     "test": "node test_runner.js",
-    "test:jest": "jest --verbose"
+    "test:jest": "jest --verbose",
+    "test:coverage": "jest --coverage --forceExit",
+    "lint": "eslint . --ext .js",
+    "format": "prettier --write .",
+    "audit": "npm audit --audit-level=high"
   },
   "keywords": [
     "event-planning",

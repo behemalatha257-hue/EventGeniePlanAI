@@ -1,14 +1,43 @@
 /**
  * EventGeniePlan AI - Input Validation & Sanitization Middleware
+ * Defense-in-depth protection against Prototype Pollution, XSS, ReDoS, and malformed payloads.
  */
 
-function sanitizeString(str) {
-  if (typeof str !== 'string') return '';
-  return str
-    .replace(/[<>]/g, '') // strip dangerous tags
-    .trim();
+const { SecurityValidator } = require('../utils/validator');
+
+/**
+ * Global middleware guarding against Prototype Pollution attacks.
+ * Strips __proto__, constructor, and prototype from all incoming request payloads.
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+function prototypePollutionGuard(req, res, next) {
+  if (req.body && typeof req.body === 'object') {
+    req.body = SecurityValidator.cleanObject(req.body);
+  }
+  if (req.query && typeof req.query === 'object') {
+    req.query = SecurityValidator.cleanObject(req.query);
+  }
+  next();
 }
 
+/**
+ * Sanitizes raw string against dangerous HTML/script injection
+ * @param {string} str Raw string
+ * @returns {string} Sanitized string
+ */
+function sanitizeString(str) {
+  const result = SecurityValidator.validateText(str, { minLength: 0, maxLength: 500000 });
+  return result.sanitized;
+}
+
+/**
+ * Validates Planning Committee Copilot requests
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
 function validateChatRequest(req, res, next) {
   const { agentId, message } = req.body || {};
 
@@ -22,28 +51,27 @@ function validateChatRequest(req, res, next) {
     });
   }
 
-  if (!message || typeof message !== 'string' || message.trim().length === 0) {
+  const textCheck = SecurityValidator.validateText(message, { minLength: 1, maxLength: 5000 });
+  if (!textCheck.isValid) {
+    const isTooLong = typeof message === 'string' && message.length > 5000;
     return res.status(400).json({
       error: {
-        code: 'EMPTY_MESSAGE',
-        message: 'Message cannot be empty.'
+        code: isTooLong ? 'MESSAGE_TOO_LONG' : 'EMPTY_MESSAGE',
+        message: textCheck.error || 'Invalid message'
       }
     });
   }
 
-  if (message.length > 5000) {
-    return res.status(400).json({
-      error: {
-        code: 'MESSAGE_TOO_LONG',
-        message: 'Message exceeds maximum allowed length of 5,000 characters.'
-      }
-    });
-  }
-
-  req.body.message = sanitizeString(message);
+  req.body.message = textCheck.sanitized;
   next();
 }
 
+/**
+ * Validates vendor contract analysis payloads
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
 function validateContractRequest(req, res, next) {
   const { contractText, sampleId } = req.body || {};
 
@@ -56,11 +84,46 @@ function validateContractRequest(req, res, next) {
     });
   }
 
-  if (contractText && contractText.length > 50000) {
+  if (contractText) {
+    const check = SecurityValidator.validateText(contractText, { minLength: 20, maxLength: 100000 });
+    if (!check.isValid) {
+      return res.status(400).json({
+        error: {
+          code: 'CONTRACT_TEXT_INVALID',
+          message: check.error || 'Contract text validation failed'
+        }
+      });
+    }
+    req.body.contractText = check.sanitized;
+  }
+
+  next();
+}
+
+/**
+ * Validates date shift requests
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+function validateDateShiftRequest(req, res, next) {
+  const { newTargetDate } = req.body || {};
+
+  if (!newTargetDate || typeof newTargetDate !== 'string') {
     return res.status(400).json({
       error: {
-        code: 'CONTRACT_TOO_LARGE',
-        message: 'Contract text exceeds maximum limit of 50,000 characters.'
+        code: 'MISSING_TARGET_DATE',
+        message: 'newTargetDate (YYYY-MM-DD) is required.'
+      }
+    });
+  }
+
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(newTargetDate) || isNaN(Date.parse(newTargetDate))) {
+    return res.status(400).json({
+      error: {
+        code: 'INVALID_DATE_FORMAT',
+        message: 'newTargetDate must be a valid date in YYYY-MM-DD format.'
       }
     });
   }
@@ -68,34 +131,44 @@ function validateContractRequest(req, res, next) {
   next();
 }
 
-function validateDateShiftRequest(req, res, next) {
-  const { newTargetDate } = req.body || {};
+/**
+ * Validates seating guest assignment requests
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
+function validateSeatingAssignment(req, res, next) {
+  const { guestId, tableId } = req.body || {};
 
-  if (!newTargetDate || !/^\d{4}-\d{2}-\d{2}$/.test(newTargetDate)) {
+  if (!guestId || typeof guestId !== 'string') {
     return res.status(400).json({
       error: {
-        code: 'INVALID_DATE_FORMAT',
-        message: 'newTargetDate must be a valid YYYY-MM-DD date string.'
+        code: 'INVALID_GUEST_ID',
+        message: 'guestId must be a non-empty string.'
       }
     });
   }
 
-  const parsed = new Date(newTargetDate);
-  if (isNaN(parsed.getTime())) {
+  if (tableId !== null && typeof tableId !== 'string') {
     return res.status(400).json({
       error: {
-        code: 'INVALID_CALENDAR_DATE',
-        message: 'Provided date is not a valid calendar date.'
+        code: 'INVALID_TABLE_ID',
+        message: 'tableId must be a string or null (unassigned).'
       }
     });
   }
+
+  req.body.guestId = sanitizeString(guestId);
+  if (req.body.tableId) req.body.tableId = sanitizeString(tableId);
 
   next();
 }
 
 module.exports = {
+  prototypePollutionGuard,
   sanitizeString,
   validateChatRequest,
   validateContractRequest,
-  validateDateShiftRequest
+  validateDateShiftRequest,
+  validateSeatingAssignment
 };
