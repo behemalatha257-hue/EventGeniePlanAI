@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EventGeniePlan AI - GenAI Event Planning Assistant & Copilot</title>
+  <meta name="description" content="Production-ready GenAI Event Planning Assistant with Multi-Agent Copilot, Smart Contract Analyzer, Seating Optimizer and Dynamic Run-Sheet." />
+  
+  <!-- Favicon -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧞</text></svg>" />
+
+  <!-- Fonts & Stylesheet -->
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+
+  <!-- Top Sticky Navigation Bar -->
+  <header class="header-bar" role="banner">
+    <div class="brand-badge">
+      <div class="brand-icon" aria-hidden="true">🧞</div>
+      <div>
+        <span class="brand-title">EventGeniePlan AI</span>
+        <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500;">GenAI Multi-Agent Event Architect</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist" aria-label="Main Navigation">
+      <button class="nav-btn active" data-tab="dashboard" id="nav-dashboard" role="tab" aria-selected="true">
+        <span>📊</span> Dashboard
+      </button>
+      <button class="nav-btn" data-tab="copilot" id="nav-copilot" role="tab" aria-selected="false">
+        <span>🤖</span> Copilot Committee
+      </button>
+      <button class="nav-btn" data-tab="contract" id="nav-contract" role="tab" aria-selected="false">
+        <span>📑</span> Contract Analyzer
+      </button>
+      <button class="nav-btn" data-tab="seating" id="nav-seating" role="tab" aria-selected="false">
+        <span>🪑</span> Seating Optimizer
+      </button>
+      <button class="nav-btn" data-tab="checklist" id="nav-checklist" role="tab" aria-selected="false">
+        <span>📅</span> Dynamic Checklist
+      </button>
+      <button class="nav-btn" data-tab="spatial" id="nav-spatial" role="tab" aria-selected="false">
+        <span>📐</span> Spatial Architect
+      </button>
+      <button class="nav-btn" data-tab="eco" id="nav-eco" role="tab" aria-selected="false">
+        <span>🌱</span> Eco & Vendors
+      </button>
+      <button class="nav-btn" data-tab="rsvp" id="nav-rsvp" role="tab" aria-selected="false">
+        <span>💬</span> RSVP Concierge
+      </button>
+    </nav>
+
+    <!-- Header Controls: Theme Toggle & AI Status -->
+    <div class="header-controls">
+      <div id="system-status-indicator" class="chip-btn" style="font-size: 0.75rem; border-color: rgba(16, 185, 129, 0.4);">
+        🟢 AI Engine: <strong>Gemini 3.8 Flash</strong>
+      </div>
+      <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle Dark / Light Theme" title="Toggle Theme">
+        <span id="theme-toggle-icon">☀️</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Viewport Container -->
+  <main class="app-container" role="main">
+
+    <!-- ===================================================================
+         TAB 1: USER DASHBOARD
+         =================================================================== -->
+    <section id="tab-dashboard" class="tab-pane active" role="tabpanel" aria-labelledby="nav-dashboard">
+      
+      <!-- Top Hero Grid: Event Overview, Countdown Timer, Budget Gauge -->
+      <div class="dashboard-hero">
+        
+        <!-- 1. Event Overview Banner -->
+        <div class="glass-card event-hero-card">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div class="event-hero-badge">
+                <span>✨</span> Active Master Event
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <label for="dash-event-type-select" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600;">Switch / Schedule:</label>
+                <select id="dash-event-type-select" class="chip-btn" style="padding: 0.35rem 0.75rem; font-size: 0.82rem; font-weight: 700; cursor: pointer; background: var(--bg-secondary); color: var(--text-main); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm);">
+                  <option value="Wedding">💍 Wedding</option>
+                  <option value="Birthday Bash">🎂 Birthday Bash</option>
+                  <option value="Community Gala">🏛️ Community Gala</option>
+                </select>
+              </div>
+            </div>
+            <h1 class="event-title" id="dash-event-title">Aria & Julian's Grand Solstice Gala Wedding</h1>
+            <div class="event-venue-row">
+              <span>📍</span> <span id="dash-event-venue">Wedding • The Grand Luminary Estate, Glasshouse Terrace</span>
+            </div>
+          </div>
+
+          <div class="quick-stats-row">
+            <div class="stat-item">
+              <span class="stat-label">Confirmed RSVPs</span>
+              <span class="stat-value" id="dash-rsvp-stat">98 / 120 (82%)</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Total Allocated</span>
+              <span class="stat-value" id="dash-budget-stat" style="color: var(--accent-gold);">$45,000</span>
+            </div>
+            <div class="stat-item">
+              <span class="stat-label">Days to Event</span>
+              <span class="stat-value" id="dash-days-stat" style="color: var(--accent-purple);">45 Days</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Live Countdown Timer -->
+        <div class="glass-card countdown-card">
+          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Live Countdown</span>
+            <div class="pulse-indicator">
+              <span class="pulse-dot"></span> Live Clock
+            </div>
+          </div>
+
+          <div class="countdown-digits-grid">
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-days">45</span>
+              <span class="countdown-tag">Days</span>
+            </div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-hours">08</span>
+              <span class="countdown-tag">Hours</span>
+            </div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-mins">34</span>
+              <span class="countdown-tag">Mins</span>
+            </div>
+            <div class="countdown-unit">
+              <span class="countdown-number" id="cd-secs">12</span>
+              <span class="countdown-tag">Secs</span>
+            </div>
+          </div>
+
+          <div style="font-size: 0.75rem; color: var(--text-secondary);">
+            Synchronized to target load-in curfew
+          </div>
+        </div>
+
+        <!-- 3. Dynamic Budget Health Gauge (SVG Speedometer) -->
+        <div class="glass-card gauge-card">
+          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Budget Health Gauge</span>
+            <span id="gauge-status-label" class="gauge-status-badge">Calculating...</span>
+          </div>
+
+          <!-- SVG Half-Circle Speedometer -->
+          <div class="gauge-svg-container">
+            <svg viewBox="0 0 200 115" width="100%" height="100%">
+              <defs>
+                <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ef4444" />
+                  <stop offset="50%" stop-color="#f59e0b" />
+                  <stop offset="100%" stop-color="#10b981" />
+                </linearGradient>
+              </defs>
+              <!-- Background Arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="14" stroke-linecap="round" />
+              <!-- Graded Color Arc -->
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gaugeGradient)" stroke-width="14" stroke-linecap="round" />
+              <!-- Center Pivot -->
+              <circle cx="100" cy="95" r="7" fill="var(--text-main)" />
+              <!-- Rotating Needle -->
+              <polygon id="gauge-needle-path" class="gauge-needle" points="98,95 102,95 100,22" fill="var(--text-main)" transform="rotate(45 100 95)" />
+            </svg>
+          </div>
+
+          <div>
+            <div class="gauge-score-text"><span id="gauge-score-value">78</span><span style="font-size: 1.1rem; color: var(--text-muted);">/100</span></div>
+            <div id="gauge-spent-ratio" style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.2rem;">
+              $32,600 spent of $45,000 (72.4%)
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Overrun Alert Banner (Dynamic) -->
+      <div id="dash-overrun-alert-box" style="margin-bottom: 1.5rem; display: none;"></div>
+
+      <!-- Secondary Row: Category Expense Breakdown & Task Completion Ring -->
+      <div class="dashboard-grid-2">
+        
+        <!-- Category Breakdown Card -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+            <div>
+              <h2 style="font-size: 1.15rem; color: var(--text-main);">Financial Category Breakdown</h2>
+              <div style="font-size: 0.8rem; color: var(--text-secondary);">Real-time allocation vs actual commitments</div>
+            </div>
+            <div style="display: flex; gap: 0.5rem;">
+              <button id="btn-predict-budget" class="btn-icon" title="Run AI Cost Creep Forecast" aria-label="Forecast cost overruns">
+                📈
+              </button>
+              <button id="btn-reset-budget" class="btn-icon" title="Reset Budget to Baseline" aria-label="Reset budget">
+                🔄
+              </button>
+            </div>
+          </div>
+
+          <div id="budget-category-list">
+            <!-- Rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Task Progress & Milestone Completion Card -->
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h2 style="font-size: 1.15rem; color: var(--text-main);">Milestone Execution Progress</h2>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Dynamic critical path completion rate</div>
+          </div>
+
+          <div style="display: flex; align-items: center; justify-content: center; gap: 2rem; margin: 1.5rem 0;">
+            <!-- SVG Progress Ring -->
+            <div style="position: relative; width: 130px; height: 130px;">
+              <svg viewBox="0 0 100 100" width="100%" height="100%">
+                <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9" />
+                <circle id="task-ring-circle" cx="50" cy="50" r="45" fill="none" stroke="var(--accent-purple)" stroke-width="9"
+                  stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="180"
+                  transform="rotate(-90 50 50)" style="transition: stroke-dashoffset 0.8s ease;" />
+              </svg>
+              <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-weight: 800; font-family: 'Outfit', sans-serif;" id="task-percent-value">
+                33%
+              </div>
+            </div>
+
+            <div>
+              <div id="task-fraction-value" style="font-weight: 700; font-size: 1.1rem; color: var(--text-main); margin-bottom: 0.3rem;">
+                2 of 6 milestones completed
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">
+                • Next critical task: <strong>Dietary Roster to Catering</strong><br/>
+                • Due in: <span style="color: var(--accent-gold); font-weight: 600;">14 Days</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="text-align: right;">
+            <button id="btn-goto-checklist" class="btn-primary" onclick="document.getElementById('nav-checklist').click();">
+              View Run-Sheet & Milestones →
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ===================================================================
+         TAB 2: MULTI-AGENT COPILOT ("THE PLANNING COMMITTEE")
+         =================================================================== -->
+    <section id="tab-copilot" class="tab-pane" role="tabpanel" aria-labelledby="nav-copilot">
+      <div class="copilot-container">
+        
+        <!-- Agent Selector Sidebar -->
+        <aside class="agent-selector-sidebar" aria-label="Planning Committee Personas">
+          <div style="margin-bottom: 0.5rem;">
+            <h2 style="font-size: 1.1rem; color: var(--text-main);">The Planning Committee</h2>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Specialized GenAI Copilots</div>
+          </div>
+
+          <div id="copilot-agent-sidebar">
+            <!-- Dynamic Agent Buttons (Vault, Aura, Chronos) -->
+          </div>
+        </aside>
+
+        <!-- Chat Arena -->
+        <div class="chat-arena">
+          <div class="chat-header">
+            <div id="chat-active-agent-title" style="font-weight: 700; font-size: 1rem; color: var(--text-main);">
+              💰 Vault (Budget Bot) <span style="font-size: 0.8rem; font-weight: 400; color: var(--text-secondary);">(Senior Event Financial Strategist)</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">
+              Multi-Agent Context Active
+            </div>
+          </div>
+
+          <!-- Chat History Stream -->
+          <div class="chat-history" id="copilot-chat-history" role="log" aria-live="polite">
+            <!-- Initial greeting injected via JS -->
+          </div>
+
+          <!-- Quick Prompt Chips -->
+          <div class="chat-quick-chips" id="copilot-quick-chips" aria-label="Suggested Prompts">
+            <!-- Prompt chips injected via JS -->
+          </div>
+
+          <!-- Input Bar -->
+          <div class="chat-input-bar">
+            <input type="text" id="copilot-chat-input" class="chat-input" placeholder="Ask your agent a question or request strategic guidance..." aria-label="Message to AI agent" />
+            <button id="copilot-send-btn" class="btn-primary" aria-label="Send Message">
+              <span>Send</span> ✈️
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 3: SMART VENDOR CONTRACT ANALYZER
+         =================================================================== -->
+    <section id="tab-contract" class="tab-pane" role="tabpanel" aria-labelledby="nav-contract">
+      <div style="margin-bottom: 1.5rem;">
+        <h1 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.25rem;">Smart Vendor Contract Analyzer</h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Forensic AI parsing of hidden administrative fees, unilateral cancellation clauses, deposit forfeiture traps, and indemnification risks.
+        </p>
+      </div>
+
+      <div class="contract-layout">
+        
+        <!-- Left Column: Input Contract Text & Samples -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+            <label for="contract-input-text" style="font-weight: 600; font-size: 0.95rem; color: var(--text-main);">
+              Vendor Agreement Text
+            </label>
+            <div>
+              <label for="contract-file-upload" class="chip-btn" style="cursor: pointer;">
+                📁 Upload Contract (.txt / .pdf)
+              </label>
+              <input type="file" id="contract-file-upload" accept=".txt,.pdf,.doc,.docx" style="display: none;" />
+            </div>
+          </div>
+
+          <!-- Pre-loaded Sample Agreement Chips -->
+          <div class="sample-selector-row" id="contract-sample-buttons">
+            <!-- Sample buttons rendered by JS -->
+          </div>
+
+          <textarea id="contract-input-text" class="contract-textarea" placeholder="Paste vendor agreement, catering order, or venue rental clauses here..."></textarea>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 1rem;">
+            <span style="font-size: 0.75rem; color: var(--text-muted);">
+              Supports Venue, Catering, AV, Photography & Entertainment contracts
+            </span>
+            <button id="btn-analyze-contract" class="btn-gold">
+              🔍 Run Forensic Contract Audit
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column: Audit Results -->
+        <div class="glass-card" id="contract-results-box" style="display: none;">
+          <!-- Audit Results rendered by JS -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 4: INTELLIGENT SEATING CHART OPTIMIZER
+         =================================================================== -->
+    <section id="tab-seating" class="tab-pane" role="tabpanel" aria-labelledby="nav-seating">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.25rem;">Intelligent Seating Chart Optimizer</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Drag-and-drop floorplan solver grouping mutual affinities, dietary requirements, and strictly separating friction feuds.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <div style="text-align: right; margin-right: 0.5rem;">
+            <div style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">Harmony Score</div>
+            <div id="seating-harmony-score" style="font-size: 1.5rem; font-weight: 800; color: var(--accent-gold); font-family: 'Outfit', sans-serif;">
+              --
+            </div>
+          </div>
+          <button id="btn-optimize-seating" class="btn-primary">
+            ⚡ AI Auto-Optimize Seating
+          </button>
+          <button id="btn-reset-seating" class="btn-icon" title="Reset Seating to Baseline">
+            🔄
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Clashes Alert Banner -->
+      <div id="seating-clashes-alert-box" style="display: none;"></div>
+
+      <div class="seating-layout">
+        
+        <!-- Left: Unassigned Guest Pool -->
+        <aside class="guest-pool-box">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border-subtle); padding-bottom: 0.5rem;">
+            <div>
+              <strong style="font-size: 0.95rem; color: var(--text-main);">Guest List Pool</strong>
+              <div style="font-size: 0.75rem; color: var(--text-secondary);">Drag to assign to tables</div>
+            </div>
+            <span id="seating-clashes-stat" style="font-size: 0.75rem; font-weight: 700;"></span>
+          </div>
+
+          <div id="seating-unassigned-pool">
+            <!-- Guest cards rendered dynamically -->
+          </div>
+        </aside>
+
+        <!-- Right: Tables Room Grid -->
+        <div class="table-room-grid" id="seating-tables-grid">
+          <!-- Tables rendered dynamically -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 5: DYNAMIC CHECKLIST & AUTOMATED RUN-SHEET
+         =================================================================== -->
+    <section id="tab-checklist" class="tab-pane" role="tabpanel" aria-labelledby="nav-checklist">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.25rem;">Dynamic Checklist & Run-Sheet Generator</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            Critical path timeline with automated cascading deadline adjustments when event target dates shift.
+          </p>
+        </div>
+
+        <div style="display: flex; gap: 0.75rem; align-items: center;">
+          <select id="event-template-select" class="chip-btn" style="padding: 0.55rem 0.85rem; font-weight: 600;">
+            <option value="Wedding">Template: Wedding</option>
+            <option value="Community Gala">Template: Community Gala</option>
+            <option value="Birthday Bash">Template: Birthday Bash</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Target Date Shift Simulator Control Bar -->
+      <div class="glass-card" style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <strong style="font-size: 0.95rem; color: var(--text-main);">Event Target Date:</strong>
+          <span id="target-date-display" style="color: var(--accent-gold); font-weight: 700; margin-left: 0.4rem;">--</span>
+          <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.2rem;">
+            Shifting the target date automatically recalculates all milestone due dates proportionally.
+          </div>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <input type="date" id="target-date-picker" class="chat-input" style="padding: 0.45rem 0.75rem; font-size: 0.85rem;" />
+          <button id="btn-apply-date-shift" class="btn-primary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">
+            Cascade Date Shift
+          </button>
+          <button id="btn-shift-plus-14" class="chip-btn" title="Push back 14 days">
+            +14 Days
+          </button>
+          <button id="btn-shift-minus-7" class="chip-btn" title="Advance 7 days earlier">
+            -7 Days
+          </button>
+        </div>
+      </div>
+
+      <!-- Milestones & Day-Of Run-Sheet Two Column Grid -->
+      <div class="contract-layout">
+        
+        <!-- Left: Milestone Checklist -->
+        <div class="glass-card">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div>
+              <h2 style="font-size: 1.15rem; color: var(--text-main);">Milestone Execution Checklist</h2>
+              <div id="checklist-progress-stat" style="font-size: 0.8rem; color: var(--text-secondary);">
+                --
+              </div>
+            </div>
+          </div>
+
+          <div class="checklist-timeline" id="checklist-milestones-container">
+            <!-- Milestones rendered by JS -->
+          </div>
+        </div>
+
+        <!-- Right: Day-of Run-Sheet Sequence -->
+        <div class="glass-card">
+          <div style="margin-bottom: 1rem;">
+            <h2 style="font-size: 1.15rem; color: var(--text-main);">Automated Day-of Run-Sheet</h2>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Chronological cue sheet for coordinators, vendors and emcees</div>
+          </div>
+
+          <div id="run-sheet-timeline-container">
+            <!-- Run-sheet items rendered by JS -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 6: VENUE SPATIAL ARCHITECT
+         =================================================================== -->
+    <section id="tab-spatial" class="tab-pane" role="tabpanel" aria-labelledby="nav-spatial">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <h1 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.25rem;">Venue Spatial Architect & Crowd-Flow Simulator</h1>
+          <p style="color: var(--text-secondary); font-size: 0.9rem;">
+            2D architectural floorplan modeling, NFPA 101 Life Safety egress verification, and bottleneck-free flow optimization.
+          </p>
+        </div>
+
+        <div id="spatial-safety-badge" class="chip-btn" style="font-weight: 700; font-size: 0.85rem; border-color: rgba(16, 185, 129, 0.4);">
+          Calculating Safety Clearance...
+        </div>
+      </div>
+
+      <!-- Controls & Metrics Bar -->
+      <div class="glass-card" style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Room Length (ft)</label>
+            <input type="number" id="spatial-input-length" class="chat-input" value="80" style="width: 110px; padding: 0.4rem 0.6rem;" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Room Width (ft)</label>
+            <input type="number" id="spatial-input-width" class="chat-input" value="50" style="width: 110px; padding: 0.4rem 0.6rem;" />
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">Guest Headcount</label>
+            <input type="number" id="spatial-input-guests" class="chat-input" value="120" style="width: 110px; padding: 0.4rem 0.6rem;" />
+          </div>
+          <button id="btn-simulate-spatial" class="btn-primary" style="align-self: flex-end; padding: 0.55rem 1.25rem;">
+            📐 Simulate Clearance
+          </button>
+        </div>
+
+        <div style="display: flex; gap: 1.5rem; text-align: right;">
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Floor Envelope</div>
+            <strong id="spatial-dim-display" style="color: var(--accent-gold); font-size: 1.05rem;">80 ft × 50 ft</strong>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Total Area</div>
+            <strong id="spatial-area-display" style="color: var(--text-main); font-size: 1.05rem;">4,000 sq ft</strong>
+          </div>
+          <div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Spatial Utilization</div>
+            <strong id="spatial-util-display" style="color: var(--accent-purple); font-size: 1.05rem;">78%</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2D Floorplan Canvas & Optimization Tips Two-Column Layout -->
+      <div class="contract-layout">
+        
+        <!-- Left: 2D Architectural Floorplan View -->
+        <div class="glass-card">
+          <h2 style="font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.5rem;">2D Architectural Floorplan & Egress Map</h2>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Includes minimum 6.0 ft emergency egress clear zone and 5.5 ft table perimeter spacing.
+          </div>
+          <div id="spatial-floorplan-svg">
+            <!-- Floorplan SVG injected dynamically -->
+          </div>
+        </div>
+
+        <!-- Right: Flow Optimization Advice & Spatial Zones -->
+        <div class="glass-card" style="display: flex; flex-direction: column; justify-content: space-between;">
+          <div>
+            <h2 style="font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.75rem;">Crowd-Flow & Bottleneck Advisory</h2>
+            <div style="background: rgba(6, 182, 212, 0.1); border-left: 4px solid var(--accent-cyan); padding: 1rem; border-radius: var(--radius-sm); margin-bottom: 1.25rem;">
+              <strong style="color: var(--accent-cyan); font-size: 0.9rem;">💡 Spatial Architect Tip:</strong>
+              <p id="spatial-flow-tip" style="color: var(--text-main); font-size: 0.85rem; margin-top: 0.4rem; line-height: 1.5;">
+                Positioning the bar at the Northwest quadrant prevents queue congestion near the primary South entrance portal during the Champagne prelude.
+              </p>
+            </div>
+
+            <h3 style="font-size: 0.95rem; color: var(--text-main); margin-bottom: 0.5rem;">Allocated Room Footprint</h3>
+            <ul style="padding-left: 1.25rem; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.8;">
+              <li>🍽️ <strong>Banquet Pavilions (West & East):</strong> 1,800 sq ft (15 sq ft / seated guest)</li>
+              <li>✨ <strong>Central Dance Floor:</strong> 396 sq ft (3.5 sq ft / simultaneous dancer)</li>
+              <li>🎤 <strong>Main Stage & Acoustic Rig:</strong> 192 sq ft (16ft × 12ft raised platform)</li>
+              <li>🍸 <strong>Mixology Bar & Lounge:</strong> 220 sq ft (Northwest perimeter)</li>
+              <li>🚪 <strong>Main Entry & Egress Clear Zone:</strong> 1,000 sq ft (NFPA 101 compliant)</li>
+            </ul>
+          </div>
+
+          <div style="background: var(--bg-secondary); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle); margin-top: 1rem;">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">Life Safety Certification Status:</div>
+            <strong style="color: var(--accent-emerald);">Verified Compliant with International Building Code (IBC Section 1004)</strong>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 7: ECO-SCORE & SUSTAINABLE VENDOR MATCHMAKING
+         =================================================================== -->
+    <section id="tab-eco" class="tab-pane" role="tabpanel" aria-labelledby="nav-eco">
+      <div style="margin-bottom: 1.5rem;">
+        <h1 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.25rem;">Sustainable & Localized Vendor Matchmaking</h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          Evaluate carbon footprints, adopt verified local green swaps, and generate tailored vendor briefs.
+        </p>
+      </div>
+
+      <!-- Eco Score Gauge Bar -->
+      <div class="glass-card" style="margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div style="display: flex; align-items: center; gap: 1.25rem;">
+          <div style="font-size: 2.25rem; font-weight: 800; font-family: 'Outfit', sans-serif; color: var(--accent-emerald);" id="eco-score-badge">
+            78/100
+          </div>
+          <div>
+            <div id="eco-rating-label" style="font-size: 1.1rem; font-weight: 700; color: var(--text-main);">Certified Green</div>
+            <div style="font-size: 0.8rem; color: var(--text-secondary);">Calculated per Greenhouse Gas Protocol (GHGP) Scope 3 event guidelines</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1.5rem;">
+          <div style="text-align: right;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Baseline Carbon Footprint</div>
+            <strong id="eco-co2-baseline" style="font-size: 1.1rem; color: var(--accent-gold);">8,040 kg CO2e</strong>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.75rem; color: var(--text-muted);">Offset Equivalent</div>
+            <strong id="eco-trees-count" style="font-size: 1.1rem; color: var(--accent-emerald);">🌳 151 Trees</strong>
+          </div>
+        </div>
+      </div>
+
+      <div class="contract-layout">
+        
+        <!-- Left: Sustainable Local Swaps -->
+        <div class="glass-card">
+          <h2 style="font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.5rem;">🌱 Sustainable Local Swaps</h2>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Adopt zero-waste and local vendor alternatives to elevate your event's sustainability rating.
+          </div>
+
+          <div id="eco-swaps-list">
+            <!-- Swaps rendered dynamically -->
+          </div>
+        </div>
+
+        <!-- Right: Automated Vendor Briefing Generator -->
+        <div class="glass-card">
+          <h2 style="font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.5rem;">📋 Automated Vendor Briefing Generator</h2>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 1rem;">
+            Customized technical riders and operational SLA briefs for your event crew.
+          </div>
+
+          <!-- Vendor Selector Tabs -->
+          <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap;">
+            <button class="chip-btn vendor-tab-btn active" data-vendor-type="dj">🎧 DJ & Sound</button>
+            <button class="chip-btn vendor-tab-btn" data-vendor-type="caterer">🍽️ Banquet Captain</button>
+            <button class="chip-btn vendor-tab-btn" data-vendor-type="photographer">📸 Photographer</button>
+            <button class="chip-btn vendor-tab-btn" data-vendor-type="florist">💐 Florist / Decor</button>
+          </div>
+
+          <div id="vendor-brief-display">
+            <!-- Vendor brief rendered dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===================================================================
+         TAB 8: HYPER-PERSONALIZED RSVP CONCIERGE
+         =================================================================== -->
+    <section id="tab-rsvp" class="tab-pane" role="tabpanel" aria-labelledby="nav-rsvp">
+      <div style="margin-bottom: 1.5rem;">
+        <h1 style="font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.25rem;">Hyper-Personalized RSVP Concierge</h1>
+        <p style="color: var(--text-secondary); font-size: 0.9rem;">
+          24/7 autonomous guest portal assisting attendees with dress code, valet parking, registry, and dietary quirk logging.
+        </p>
+      </div>
+
+      <div class="glass-card" style="max-width: 900px; margin: 0 auto; height: 640px; display: flex; flex-direction: column;">
+        <div class="chat-header">
+          <div>
+            <strong style="color: var(--text-main); font-size: 1.05rem;">🛎️ Solstice Gala Guest Concierge</strong>
+            <div style="font-size: 0.75rem; color: var(--text-secondary);">Ask any questions regarding Aria & Julian's Gala Wedding</div>
+          </div>
+          <div class="chip-btn" style="border-color: rgba(16, 185, 129, 0.4); font-size: 0.75rem;">
+            🟢 24/7 Portal Active
+          </div>
+        </div>
+
+        <!-- Chat History -->
+        <div class="chat-history" id="rsvp-chat-history">
+          <div class="chat-bubble agent">
+            Warm greetings! I am your personal concierge for Aria & Julian's Grand Solstice Gala Wedding. How may I assist your attendance today? Feel free to ask about our <strong>dress code</strong>, <strong>valet parking</strong>, <strong>event timeline</strong>, or submit <strong>dietary requirements</strong>.
+          </div>
+        </div>
+
+        <!-- Quick FAQ Chips -->
+        <div class="chat-quick-chips" style="padding: 0.5rem 1rem;">
+          <button class="chip-btn rsvp-chip-btn" data-query="What is the dress code?">👗 Dress Code</button>
+          <button class="chip-btn rsvp-chip-btn" data-query="Where do I park? Is valet available?">🚗 Parking & Valet</button>
+          <button class="chip-btn rsvp-chip-btn" data-query="What time does the ceremony begin?">⏰ Event Timeline</button>
+          <button class="chip-btn rsvp-chip-btn" data-query="Can I bring my children?">👶 Children Policy</button>
+          <button class="chip-btn rsvp-chip-btn" data-query="Where is the couple registered for gifts?">🎁 Gift Registry</button>
+          <button class="chip-btn rsvp-chip-btn" data-query="I have a severe nut allergy and require vegan dining.">🥗 Dietary Quirks</button>
+        </div>
+
+        <!-- Input Bar -->
+        <div class="chat-input-bar">
+          <input type="text" id="rsvp-chat-input" class="chat-input" placeholder="Type your guest question here (e.g., 'Is there valet parking?')..." />
+          <button id="btn-send-rsvp-query" class="btn-primary">
+            <span>Send</span> ✈️
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- PDF.js for clean client-side contract PDF parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+  <!-- Client JavaScript Modules -->
+  <script src="/js/utils.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+  <script src="/js/copilot.js"></script>
+  <script src="/js/contractAnalyzer.js"></script>
+  <script src="/js/seatingChart.js"></script>
+  <script src="/js/checklistManager.js"></script>
+  <script src="/js/advancedFeatures.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>

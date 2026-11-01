@@ -1,0 +1,43 @@
+{
+  "name": "eventgenieplan-ai",
+  "version": "1.0.0",
+  "description": "Production-Ready GenAI-Powered Event Planning Assistant with Multi-Agent Copilot, Contract Analyzer, Seating Optimizer & Dynamic Run-Sheet",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test_runner.js",
+    "test:jest": "jest --verbose"
+  },
+  "keywords": [
+    "event-planning",
+    "genai",
+    "gemini",
+    "multi-agent",
+    "budget-tracker",
+    "contract-analyzer",
+    "seating-optimizer",
+    "dynamic-checklist"
+  ],
+  "author": "EventGeniePlan AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "compression": "^1.8.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testTimeout": 25000,
+    "verbose": true
+  }
+}
