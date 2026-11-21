@@ -91,3 +91,4 @@ class SecurityValidator {
 module.exports = {
   SecurityValidator
 };
+

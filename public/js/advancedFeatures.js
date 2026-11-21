@@ -328,7 +328,17 @@ const AdvancedFeatures = {
 
     try {
       const res = await API.askRsvpConcierge(query);
-      botBubble.innerHTML = Utils.renderMarkdown(res.reply);
+      botBubble.innerHTML = `
+        <div class="bubble-text">${Utils.renderMarkdown(res.reply)}</div>
+        <div style="display: flex; justify-content: flex-end; margin-top: 6px;">
+          <button class="msg-tts-btn" title="Read Aloud" aria-label="Read Aloud" style="background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border-subtle); border-radius: 4px; padding: 2px 6px; font-size: 0.72rem; cursor: pointer; color: var(--text-secondary); display: flex; align-items: center; gap: 4px;">
+            🎙️ Read Aloud
+          </button>
+        </div>
+      `;
+      if (window.a11yAnnounce) {
+        window.a11yAnnounce('RSVP Concierge replied');
+      }
     } catch (err) {
       botBubble.innerHTML = `⚠️ Sorry, I could not retrieve that information: ${err.message}`;
     } finally {
