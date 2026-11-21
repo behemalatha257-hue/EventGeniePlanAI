@@ -8,15 +8,14 @@ const { AGENT_PERSONAS } = require('../config/constants');
 require('dotenv').config();
 
 const apiKey = process.env.GEMINI_API_KEY;
-const preferredModel = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+const preferredModel = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
 
 // Candidate models in priority order for automatic failover
 const CANDIDATE_MODELS = [
   preferredModel,
+  'gemini-3.8-flash',
   'gemini-2.5-flash',
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-pro'
+  'gemini-1.5-flash'
 ].filter((m, i, arr) => m && arr.indexOf(m) === i); // Deduplicate
 
 let genAI = null;
@@ -31,7 +30,7 @@ if (apiKey && apiKey !== 'your_gemini_api_key_here') {
 /**
  * Helper with timeout to call Gemini with JSON schema or standard text
  */
-function withTimeout(promise, ms = 7000) {
+function withTimeout(promise, ms = 3500) {
   return Promise.race([
     promise,
     new Promise((_, reject) => setTimeout(() => reject(new Error(`AI_TIMEOUT_${ms}MS`)), ms))
