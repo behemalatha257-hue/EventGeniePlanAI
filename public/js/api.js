@@ -19,9 +19,21 @@ const API = {
         }
       });
 
-      const data = await response.json();
+      let data;
+      const contentType = response.headers.get('content-type') || '';
+      if (contentType.includes('application/json')) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        try {
+          data = JSON.parse(text);
+        } catch {
+          data = { error: { message: text } };
+        }
+      }
+
       if (!response.ok) {
-        throw new Error(data.error?.message || `HTTP ${response.status}: Request failed`);
+        throw new Error(data.error?.message || data.message || `HTTP ${response.status}: Request failed`);
       }
       return data;
     } catch (err) {

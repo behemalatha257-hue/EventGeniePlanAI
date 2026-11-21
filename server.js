@@ -55,10 +55,14 @@ app.use(
 // High-Performance Observability Middleware (Server-Timing Header)
 app.use((req, res, next) => {
   const start = process.hrtime.bigint();
-  res.on('finish', () => {
-    const elapsedMs = Number(process.hrtime.bigint() - start) / 1e6;
-    res.setHeader('Server-Timing', `total;dur=${elapsedMs.toFixed(2)}`);
-  });
+  const originalEnd = res.end;
+  res.end = function (...args) {
+    if (!res.headersSent) {
+      const elapsedMs = Number(process.hrtime.bigint() - start) / 1e6;
+      res.setHeader('Server-Timing', `total;dur=${elapsedMs.toFixed(2)}`);
+    }
+    return originalEnd.apply(this, args);
+  };
   next();
 });
 

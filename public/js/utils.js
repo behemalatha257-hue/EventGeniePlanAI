@@ -19,21 +19,44 @@ const Utils = {
    */
   formatDate(dateStr) {
     if (!dateStr) return 'N/A';
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric'
-    });
+    try {
+      const clean = String(dateStr).includes('T') ? dateStr : `${dateStr}T00:00:00`;
+      const d = new Date(clean);
+      if (isNaN(d.getTime())) return String(dateStr);
+      return d.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+    } catch {
+      return String(dateStr);
+    }
   },
 
   /**
    * Calculates live countdown components (days, hours, minutes, seconds)
    */
   calculateCountdown(targetDateStr) {
-    const target = new Date(targetDateStr + 'T09:00:00').getTime();
+    let targetTime = NaN;
+
+    if (targetDateStr) {
+      const str = String(targetDateStr).trim();
+      const matchDays = str.match(/in\s+(\d+)\s+days/i);
+      if (matchDays) {
+        targetTime = Date.now() + parseInt(matchDays[1], 10) * 86400000;
+      } else {
+        const clean = str.includes('T') ? str : `${str}T09:00:00`;
+        targetTime = new Date(clean).getTime();
+      }
+    }
+
+    if (isNaN(targetTime)) {
+      // Graceful fallback: 45 days from now
+      targetTime = Date.now() + 45 * 86400000;
+    }
+
     const now = Date.now();
-    const diff = target - now;
+    const diff = targetTime - now;
 
     if (diff <= 0) {
       return { days: 0, hours: 0, minutes: 0, seconds: 0, isPast: true };

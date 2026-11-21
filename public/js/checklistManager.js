@@ -7,8 +7,8 @@ const ChecklistManager = {
   data: null,
 
   async init() {
-    await this.loadChecklist();
     this.setupEventListeners();
+    await this.loadChecklist();
   },
 
   async loadChecklist() {

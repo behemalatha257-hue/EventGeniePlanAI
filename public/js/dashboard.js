@@ -8,9 +8,9 @@ const Dashboard = {
   eventData: null,
 
   async init() {
-    await this.loadOverview();
     this.startCountdown();
     this.setupEventListeners();
+    await this.loadOverview();
   },
 
   async loadOverview() {
@@ -53,9 +53,8 @@ const Dashboard = {
     if (this.countdownInterval) clearInterval(this.countdownInterval);
 
     const updateTimer = () => {
-      if (!this.eventData || !this.eventData.targetDate) return;
-
-      const { days, hours, minutes, seconds } = Utils.calculateCountdown(this.eventData.targetDate);
+      const targetDate = this.eventData?.targetDate || 'In 45 Days';
+      const { days, hours, minutes, seconds } = Utils.calculateCountdown(targetDate);
 
       const daysEl = document.getElementById('cd-days');
       const hoursEl = document.getElementById('cd-hours');
