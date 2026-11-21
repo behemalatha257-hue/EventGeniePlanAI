@@ -194,6 +194,14 @@ async function runAllTests() {
 
     const parkRes = await handleConciergeInquiry('Where do I park?');
     assert(parkRes.reply.toLowerCase().includes('valet'), 'Contains valet parking info');
+
+    const dinnerRes = await handleConciergeInquiry('what is the dinner plan');
+    assert(dinnerRes.success === true, 'Dinner plan query answered');
+    assert(dinnerRes.reply.toLowerCase().includes('dinner') || dinnerRes.reply.toLowerCase().includes('course'), 'Contains dinner plan info');
+
+    const overflowRes = await handleConciergeInquiry('the parking space is full where to park');
+    assert(overflowRes.success === true, 'Overflow parking query answered');
+    assert(overflowRes.reply.toLowerCase().includes('overflow') || overflowRes.reply.toLowerCase().includes('lot b'), 'Contains overflow parking info');
   });
 
   // SUITE 9: Security & Prototype Pollution Defensive Validation

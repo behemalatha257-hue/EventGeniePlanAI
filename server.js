@@ -124,7 +124,7 @@ if (require.main === module) {
     console.log(`🧞 EventGeniePlan AI Server Running on Port ${PORT}`);
     console.log(`🌐 Dashboard URL: http://localhost:${PORT}`);
     console.log(`⚡ Environment:   ${process.env.NODE_ENV || 'development'}`);
-    console.log(`🤖 AI Engine:     ${process.env.GEMINI_MODEL || 'gemini-3.5-flash'}`);
+    console.log(`🤖 AI Engine:     ${process.env.GEMINI_MODEL || 'gemini-flash-lite-latest'}`);
     console.log(`=======================================================`);
   });
 

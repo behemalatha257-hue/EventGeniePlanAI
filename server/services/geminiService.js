@@ -8,14 +8,19 @@ const { AGENT_PERSONAS } = require('../config/constants');
 require('dotenv').config();
 
 const apiKey = process.env.GEMINI_API_KEY;
-const preferredModel = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+const preferredModel = process.env.GEMINI_MODEL || 'gemini-flash-lite-latest';
 
 // Candidate models in priority order for automatic failover
+// Priority 1: gemini-flash-lite-latest (Lightning-fast ~1s, confirmed active & quota available)
+// Priority 2: gemini-flash-latest (Reliable, fast)
+// Priority 3: gemini-3.5-flash (High capability, active)
+// Priority 4: gemini-3.8-flash (Latest preview)
 const CANDIDATE_MODELS = [
   preferredModel,
-  'gemini-3.8-flash',
-  'gemini-2.5-flash',
-  'gemini-1.5-flash'
+  'gemini-flash-lite-latest',
+  'gemini-flash-latest',
+  'gemini-3.5-flash',
+  'gemini-3.8-flash'
 ].filter((m, i, arr) => m && arr.indexOf(m) === i); // Deduplicate
 
 let genAI = null;

@@ -42,6 +42,7 @@ function getActiveEventProfile() {
       parking: 'Complimentary penthouse valet parking is available at the main 4th Avenue entrance. Ride-share drop-off bay is located right beside the ground floor lobby.',
       overflowParking: 'If the primary 4th Avenue valet queue is full, secondary underground parking is available at Horizon Center Garage (Level P2) with elevator access directly to the penthouse lobby.',
       schedule: 'Doors open & Signature Welcome Cocktails at 06:30 PM, 360 Photo Booth at 07:30 PM, Surprise Reveal & Toast at 08:00 PM, Kinetic Sparkler Cake Cutting at 08:45 PM, and Club DJ Set until 12:15 AM.',
+      dinnerPlan: 'Gourmet street-food inspired tapas, wagyu sliders, artisan sushi platters, and a late-night ramen bar served from 07:30 PM to 10:00 PM. Full vegan and gluten-free stations available.',
       registry: 'No boxed gifts requested! In lieu of physical gifts, contributions toward Leo’s Tokyo Culinary Adventure fund or a toast with a signature cocktail are warmly appreciated.',
       children: 'This is a 21+ adult celebration featuring craft mixology, live sound, and late-night music.',
       accommodations: 'We recommend The Skyline Boutique Hotel (2 blocks away) or The Grand Hyatt Downtown. Mention "Neon Horizon" for a preferred rate.',
@@ -60,6 +61,7 @@ function getActiveEventProfile() {
       parking: 'Underground Civic Center parking is complimentary. Bring your parking ticket to the registration desk inside the Atrium for validation stamp.',
       overflowParking: 'If the underground Civic Center garage displays FULL, please proceed to the West Plaza Surface Lot (Entrance on 2nd St). Validation tickets are honored at both locations.',
       schedule: 'VIP Red Carpet Reception at 05:30 PM, Four-Course Dinner & Civic Keynote at 07:00 PM, Live Benefit Auction at 08:30 PM, and Orchestral Performance at 10:00 PM.',
+      dinnerPlan: 'Formal four-course plated culinary dinner served at 07:00 PM featuring seasonal organic harvest, choice of wild Alaskan salmon or dry-aged filet mignon, and opera cake dessert. Full dietary accommodations prepared.',
       registry: 'All proceeds and contributions support the City Arts Community Endowment & Youth Creative Fellowship. Direct donations and auction pledges can be made via mobile terminals.',
       children: 'All registered ticket-holders of all ages are welcome. Youth attendees must be accompanied by an adult.',
       accommodations: 'Special room blocks are reserved at the City Plaza Hotel and The Fairmont Downtown adjacent to the Civic Center.',
@@ -78,6 +80,7 @@ function getActiveEventProfile() {
     parking: EVENT_FAQS.parking,
     overflowParking: 'If the North Porte-Cochère valet lot reaches full capacity, designated **South Terrace Overflow Parking (Lot B)** opens automatically with complimentary golf-cart shuttles running every 3–5 minutes directly to the pavilion foyer. Street parking is also permitted along Solstice Way past the main gates.',
     schedule: EVENT_FAQS.schedule,
+    dinnerPlan: 'A formal 3-course plated dinner commencing at **07:00 PM** following terrace cocktails. Guests will enjoy an artisanal burrata salad, pre-selected choice of slow-braised short rib or pan-seared Chilean sea bass, and decadent dark chocolate fondant dessert. Full dietary accommodations (vegan, celiac/gluten-free, nut-free, and halal courses) are freshly prepared on-site.',
     registry: EVENT_FAQS.registry,
     children: EVENT_FAQS.children,
     accommodations: 'A dedicated guest room block is reserved at The Emerald Valley Resort & Lodge (on-site) and The Glasshouse Inn (1 mile away). Shuttle service operates between both.',
@@ -116,6 +119,7 @@ Event Context:
 - Venue: ${profile.venue}
 - Target Date: ${profile.targetDate}
 - Schedule: ${profile.schedule}
+- Dinner Plan & Banquet Menu: ${profile.dinnerPlan}
 - Dress Code: ${profile.dressCode}
 - Parking & Valet: ${profile.parking}
 - Overflow Parking: ${profile.overflowParking}
@@ -128,8 +132,8 @@ Guest Question: "${rawQuery}"
 
 Instructions:
 1. Provide a direct, elegant, hospitable response in 2-3 sentences.
-2. Directly and specifically answer what the guest asked. If they ask about overflow or what to do if parking is full, explain the overflow parking and shuttles.
-3. Be helpful, courteous, and accurate.`;
+2. Directly and specifically answer what the guest asked. If they ask about the dinner plan, food, or menu, detail the dinner timing, 3 courses, and dietary accommodations. If they ask about overflow or what to do if parking is full, explain the overflow parking and shuttles.
+3. Always be helpful, welcoming, and accurate.`;
 
   try {
     const aiText = await callGeminiRaw(prompt, 'You are a helpful, gracious event concierge.', false);
@@ -272,8 +276,17 @@ Instructions:
     };
   }
 
-  // C. Dinner Time
-  if (/\b(dinner time|when is dinner|what time is food|meal time|serve dinner)\b/i.test(query)) {
+  // C. Dinner Time & Dinner Plan / Menu
+  if (/\b(dinner plan|what is the dinner|dinner menu|menu|food plan|dinner schedule|courses|what are we eating|food being served|meal plan)\b/i.test(query)) {
+    return {
+      success: true,
+      reply: `🍽️ **Dinner Plan & Banquet Menu (${profile.title}):**\n${profile.dinnerPlan}`,
+      category: 'faq-match',
+      source: 'rsvp-concierge-knowledge'
+    };
+  }
+
+  if (/\b(dinner time|when is dinner|what time is food|meal time|serve dinner|what time is dinner)\b/i.test(query)) {
     return {
       success: true,
       reply: `🍽️ **Dinner Service Timing:**\nThe formal 3-course plated dinner begins at **07:00 PM**, following cocktail hour and passed canapés. Speeches and toasts take place between courses, followed by the first dance and cake cutting at 08:45 PM.`,
